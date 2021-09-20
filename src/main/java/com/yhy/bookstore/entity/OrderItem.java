@@ -11,18 +11,20 @@ import javax.persistence.*;
 @JsonIgnoreProperties(value = {"handler", "hibernateLazyInitializer", "fieldHandler"})
 public class OrderItem {
 
-    @Id
-    @Column(name = "item_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int itemId;
+  @Id
+  @Column(name = "item_id")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private int itemId;
 
-    @Column(name = "order_id")
-    private int orderId;
+  @Column(name = "order_id")
+  private int orderId;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "book_id")
-    private Book book;
-    @Column(name = "book_number")
-    private int bookNumber;
-    private double bookPrice;
+  @OneToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "book_id")
+  private Book book;
+
+  @Column(name = "book_number")
+  private int bookNumber;
+
+  private int bookPrice;
 }

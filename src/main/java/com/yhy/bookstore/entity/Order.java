@@ -13,18 +13,18 @@ import java.util.List;
 @Table(name = "orders")
 @JsonIgnoreProperties(value = {"handler", "hibernateLazyInitializer", "fieldHandler"})
 public class Order {
-    @Id
-    @Column(name = "order_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int orderId;
+  @Id
+  @Column(name = "order_id")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private int orderId;
 
-    @Column(name = "user_id")
-    private int userId;
+  @Column(name = "user_id")
+  private int userId;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC+8")
-    private Timestamp time;
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC+8")
+  private Timestamp time;
 
-    @OneToMany(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "order_id", updatable = false)
-    private List<OrderItem> items;
+  @OneToMany(cascade = CascadeType.REMOVE)
+  @JoinColumn(name = "order_id", updatable = false)
+  private List<OrderItem> items;
 }
