@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Scope("prototype")
@@ -21,6 +22,7 @@ public class OrderServiceImpl implements OrderService {
 
   @Override
   @JmsListener(destination = "order")
+  @Transactional
   public void addOrder(OrderBean orderBean) {
     Order order = new Order();
     order.setUserId(orderBean.getUserId());
