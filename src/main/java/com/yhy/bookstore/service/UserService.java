@@ -7,13 +7,19 @@ import java.util.List;
 
 public interface UserService {
 
-    User checkUser(String username, String password);
-    User getUserById(Integer userId);
-    List<Order> getOrders(Integer userId);
-    List<User> getUsers();
-    void switchUserAuth(int userId);
+  User checkUser(String username, String password);
 
-    void addUser(User user);
+  User getUserById(Integer userId);
 
-    boolean checkUsername(String username);
+  List<Order> getOrders(Integer userId);
+
+  List<User> getUsers();
+
+  void switchUserAuth(int userId);
+
+  void addUser(User user);
+
+  boolean checkUsername(String username);
+
+  Integer visitsIncrement();
 }
