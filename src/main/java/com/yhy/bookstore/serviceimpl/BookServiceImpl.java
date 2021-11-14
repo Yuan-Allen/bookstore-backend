@@ -2,6 +2,7 @@ package com.yhy.bookstore.serviceimpl;
 
 import com.yhy.bookstore.dao.BookDao;
 import com.yhy.bookstore.entity.Book;
+import com.yhy.bookstore.entity.Label;
 import com.yhy.bookstore.service.BookService;
 import com.yhy.bookstore.utils.fulltextsearchutils.IndexUtil;
 import com.yhy.bookstore.utils.fulltextsearchutils.SearchUtil;
@@ -92,5 +93,11 @@ public class BookServiceImpl implements BookService {
     }
     reader.close();
     return result;
+  }
+
+  @Override
+  public List<Book> getRelatedBooksByLable(String label) {
+    List<Label> labels = bookDao.getAboutLables(label);
+    return bookDao.getBooksByLables(labels);
   }
 }

@@ -4,8 +4,10 @@ import com.yhy.bookstore.constant.Constant;
 import com.yhy.bookstore.dao.BookDao;
 import com.yhy.bookstore.entity.Book;
 import com.yhy.bookstore.entity.BookDescription;
+import com.yhy.bookstore.entity.Label;
 import com.yhy.bookstore.repository.BookDescriptionRepository;
 import com.yhy.bookstore.repository.BookRepository;
+import com.yhy.bookstore.repository.LableRepository;
 import com.yhy.bookstore.utils.redisutils.RedisUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -20,6 +22,7 @@ import java.util.Optional;
 public class BookDaoImpl implements BookDao {
   @Autowired private BookRepository bookRepository;
   @Autowired private BookDescriptionRepository bookDescriptionRepository;
+  @Autowired private LableRepository lableRepository;
   @Autowired RedisUtil redisUtil;
 
   @Override
@@ -127,5 +130,32 @@ public class BookDaoImpl implements BookDao {
     }
     redisUtil.del("book:books");
     return true;
+  }
+
+  @Override
+  public List<Label> getAboutLables(String label) {
+    return lableRepository.findAboutsByLabelTwice(label);
+  }
+
+  @Override
+  public List<Book> getBooksByLables(List<Label> labels) {
+    List<Book> result = new ArrayList<>();
+    List<Book> books = bookRepository.getBooks();
+    for (Book book : books) {
+      for (Label label : labels) {
+        if (label.getLabel().equals(book.getType())) {
+          result.add(book);
+        }
+      }
+    }
+    for (Book book : result) {
+      Optional<BookDescription> description = bookDescriptionRepository.findById(book.getBookId());
+      if (description.isPresent()) {
+        book.setDescription(description.get().getDescripton());
+      } else {
+        book.setDescription("");
+      }
+    }
+    return result;
   }
 }

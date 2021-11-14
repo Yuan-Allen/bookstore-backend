@@ -22,4 +22,6 @@ public interface BookService {
   long indexBooks(Path indexDirPath, Path dataDirPath);
 
   List<Book> fullTextSearch(Path indexDirPath, String queryString) throws Exception;
+
+  List<Book> getRelatedBooksByLable(String label);
 }

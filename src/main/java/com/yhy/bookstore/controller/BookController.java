@@ -131,4 +131,9 @@ public class BookController {
     }
     return result;
   }
+
+  @GetMapping("getBooksByLabel")
+  public List<Book> getBooksByLabel(@RequestParam("label") String label) {
+    return bookService.getRelatedBooksByLable(label);
+  }
 }
