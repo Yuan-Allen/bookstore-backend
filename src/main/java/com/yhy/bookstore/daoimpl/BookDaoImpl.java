@@ -3,6 +3,8 @@ package com.yhy.bookstore.daoimpl;
 import com.yhy.bookstore.constant.Constant;
 import com.yhy.bookstore.dao.BookDao;
 import com.yhy.bookstore.entity.Book;
+import com.yhy.bookstore.entity.BookDescription;
+import com.yhy.bookstore.repository.BookDescriptionRepository;
 import com.yhy.bookstore.repository.BookRepository;
 import com.yhy.bookstore.utils.redisutils.RedisUtil;
 import net.sf.json.JSONArray;
@@ -12,10 +14,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class BookDaoImpl implements BookDao {
   @Autowired private BookRepository bookRepository;
+  @Autowired private BookDescriptionRepository bookDescriptionRepository;
   @Autowired RedisUtil redisUtil;
 
   @Override
@@ -26,6 +30,12 @@ public class BookDaoImpl implements BookDao {
       System.out.println("Book: " + id + " is not in Redis");
       System.out.println("Searching Book: " + id + " in DB");
       book = bookRepository.getOne(id);
+      Optional<BookDescription> description = bookDescriptionRepository.findById(id);
+      if (description.isPresent()) {
+        book.setDescription(description.get().getDescripton());
+      } else {
+        book.setDescription("");
+      }
       redisUtil.set("book:" + id, com.alibaba.fastjson.JSONArray.toJSON(book));
     } else {
       book = com.alibaba.fastjson.JSONArray.parseObject(p.toString(), Book.class);
@@ -41,6 +51,15 @@ public class BookDaoImpl implements BookDao {
     if (p == null) {
       System.out.println("books is not in redis");
       books = bookRepository.getBooks();
+      for (Book book : books) {
+        Optional<BookDescription> description =
+            bookDescriptionRepository.findById(book.getBookId());
+        if (description.isPresent()) {
+          book.setDescription(description.get().getDescripton());
+        } else {
+          book.setDescription("");
+        }
+      }
       redisUtil.set("book:books", com.alibaba.fastjson.JSONArray.toJSON(books));
     } else {
       books = com.alibaba.fastjson.JSONArray.parseArray(p.toString(), Book.class);
@@ -58,6 +77,7 @@ public class BookDaoImpl implements BookDao {
     redisUtil.del("book:" + book.getBookId());
     redisUtil.del("book:books");
     bookRepository.saveAndFlush(book);
+    bookDescriptionRepository.save(new BookDescription(book.getBookId(), book.getDescription()));
   }
 
   @Override
@@ -67,6 +87,7 @@ public class BookDaoImpl implements BookDao {
     redisUtil.del("book:" + book.getBookId());
     redisUtil.del("book:books");
     bookRepository.saveAndFlush(book);
+    bookDescriptionRepository.deleteById(bookId);
   }
 
   @Override
